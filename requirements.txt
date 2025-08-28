@@ -1,4 +1,4 @@
 yfinance
 numpy 
-scipy.stats
+scipy
 streamlit

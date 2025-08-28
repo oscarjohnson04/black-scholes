@@ -17,7 +17,7 @@ def black_scholes(r, S, K, T, sigma, type = "C"):
   try:
     if type == "C":
       price = S*norm.cdf(d1, 0, 1) - K*np.exp(-r*T)*norm.cdf(d2, 0, 1)
-    else type == "P":
+    elif type == "P":
       price = K*np.exp(-r*T)*norm.cdf(-d2, 0, 1) - S*norm.cdf(-d1, 0, 1)
     return price
   except:

@@ -23,4 +23,4 @@ def black_scholes(r, S, K, T, sigma, type = "C"):
   except:
     print("Please confirm all option parameters")
 
-print("Option Price is: ", round(black_scholes(r, S, K, T, sigma, type = "C"), 2)
+print("Option Price is: ", round(black_scholes(r, S, K, T, sigma, type = "C"), 2))

@@ -21,6 +21,6 @@ def black_scholes(r, S, K, T, sigma, type = "C"):
       price = K*np.exp(-r*T)*norm.cdf(-d2, 0, 1) - S*norm.cdf(-d1, 0, 1)
     return price
   except:
-    print("Please confirm all option parameters")
+    st.write("Please confirm all option parameters")
 
-print("Option Price is: ", round(black_scholes(r, S, K, T, sigma, type = "C"), 2))
+st.write("Option Price is: ", round(black_scholes(r, S, K, T, sigma, type = "C"), 2))

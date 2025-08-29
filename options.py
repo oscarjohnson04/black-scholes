@@ -22,9 +22,10 @@ r=0.01 #risk free rate
 S = df['Close'].iloc[-1] #base price
 st.write(S)
 
-user_val = st.text_input("Enter a number", "0")
+user_val = st.text_input("Enter the strike price", "0")
 K = float(user_val)
-#K=200 #strike
+r = st.slider("Enter the risk free rate", 0.01, 1, value=0.01)
+sigma = st.slider("Enter the volatility", 0.01, 1, value=0.3)
 T=240/365
 sigma = 0.3 #volatility?
 

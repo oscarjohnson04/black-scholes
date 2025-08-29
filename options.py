@@ -18,16 +18,14 @@ ticker = ticker_input.strip().upper()
 df = yf.download(ticker, start, end)
 
 #define variables
-r=0.01 #risk free rate
 S = df['Close'].iloc[-1] #base price
 st.write(S)
 
 user_val = st.text_input("Enter the strike price", "0")
 K = float(user_val)
-r = st.slider("Enter the risk free rate", 0.01, 1, value=0.01)
-sigma = st.slider("Enter the volatility", 0.01, 1, value=0.3)
-T=240/365
-sigma = 0.3 #volatility?
+r = st.slider("Enter the risk free rate", 0.0, 0.1, value=0.01, step=0.001, format="%.3f")
+sigma = st.slider("Enter the volatility (σ)", 0.0, 1.0, value=0.3, step=0.01, format="%.2f")
+T = st.slider("Time to Maturity (in days)", 1, 365, value=240, step=1) / 365
 
 def black_scholes(r, S, K, T, sigma, type = "C"):
   d1 = (np.log(S/K) + (r + sigma**2/2)*T)/(sigma*np.sqrt(T))

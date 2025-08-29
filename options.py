@@ -15,7 +15,7 @@ st.title("Black-Scholes Options Pricing")
 ticker_input = st.text_input("Enter Ticker")
 ticker = ticker_input.strip().upper()
 
-df = yf.download(ticker, start, end, multi_level_index = False)
+df = yf.download(ticker, start, end)
 
 #define variables
 r=0.01 #risk free rate

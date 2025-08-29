@@ -22,16 +22,8 @@ r=0.01 #risk free rate
 S = df['Close'].iloc[-1] #base price
 st.write(S)
 
-user_val = st.text_input("Enter a number", "")
-
-if user_val.strip() == "":
-    st.write("No number entered yet")
-else:
-    try:
-        K = float(user_val)
-        st.write("You entered:", K)
-    except ValueError:
-        st.error("Please enter a valid number")
+user_val = st.text_input("Enter a number", "0")
+K = float(user_val)
 #K=200 #strike
 T=240/365
 sigma = 0.3 #volatility?

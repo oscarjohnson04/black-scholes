@@ -19,7 +19,7 @@ df = yf.download(ticker, start, end)
 
 #define variables
 S = float(round((df['Close'].iloc[-1]), 2)) #base price
-st.write(S)
+st.write("Latest price of chosen stock : ", S)
 
 user_val = st.text_input("Enter the strike price", "0")
 K = float(user_val)

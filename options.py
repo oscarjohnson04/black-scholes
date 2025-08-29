@@ -23,7 +23,7 @@ S = df['Close'].iloc[-1] #base price
 st.write(S)
 K = st.text_input("Strike Price")
 try:
-    value = float(user_input)
+    value = float(K)
     st.write("You entered:", value)
 except ValueError:
     st.error("Please enter a valid number")

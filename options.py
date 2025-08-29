@@ -34,7 +34,7 @@ if vol_choice == "Historical":
     rolling_std = returns.rolling(window=30).std()
     sigma_last = rolling_std.iloc[-1]
     sigma = sigma_last * np.sqrt(252)  # last value
-    sigma_display = round((sigma), 2)
+    sigma_display = float(round((sigma), 2))
     st.write("Historical Volatility (σ) calculated from past 30 days: ", sigma_display)
 else:
         # Let user enter custom volatility via slider

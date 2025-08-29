@@ -31,14 +31,14 @@ vol_choice = st.radio("Select Volatility Type", ("Historical", "Custom"))
 
 if vol_choice == "Historical":
     returns = df['Close'].pct_change().dropna()
-    window = st.text_input("Enter the time window", "30")
-    window = int(window)
+    window2 = st.text_input("Enter the time window", "30")
+    window = int(window2)
     rolling_std = returns.rolling(window=window).std()
     sigma_last = rolling_std.iloc[-1]
     sigma = sigma_last * np.sqrt(252)  # last value
     sigma_display = float(round((sigma), 4)) * 100
     sigma_display = str(sigma_display) + "%"
-    st.write("Historical Volatility calculated from past ", window," days: ", sigma_display)
+    st.write("Historical Volatility calculated from past ", window2," days: ", sigma_display)
 else:
         # Let user enter custom volatility via slider
     sigma_percent = st.slider("Enter the volatility (%)", 0.0, 50.0, value=10.0, step=0.01, format="%.2f%%")

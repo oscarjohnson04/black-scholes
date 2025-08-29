@@ -20,7 +20,7 @@ df = yf.download(ticker, start, end)
 #define variables
 r=0.01 #risk free rate
 S = df['Close'].iloc[-1] #base price
-K=40 #strike
+K=200 #strike
 T=240/365
 sigma = 0.3 #volatility?
 

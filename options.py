@@ -92,5 +92,4 @@ greeks = pd.DataFrame({
 
 st.write(f"{option_type} Option Price: {price:.2f}")
 st.subheader("Option Greeks")
-st.table(greeks.style.format({"Value": "{:.4f}"}))
-st.table(greeks.to_string(index=False))
+st.dataframe(greeks.set_index('Greek').style.format("{:.4f}"), use_container_width=True)

@@ -42,4 +42,5 @@ def black_scholes(r, S, K, T, sigma, type = "C"):
       st.write("Error:", e)
       return None
 
-st.write("Option Price is: ", round(black_scholes(r, S, K, T, sigma, type = "C"), 2))
+display_price = float(black_scholes(r, S, K, T, sigma, type="C"))
+st.write("Option Price is: ", round((display_price), 2)

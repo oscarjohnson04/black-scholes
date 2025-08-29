@@ -52,6 +52,11 @@ option_type_code = "C" if option_type == "Call" else "P"
 def black_scholes(r, S, K, T, sigma, type = option_type_code):
   d1 = (np.log(S/K) + (r + sigma**2/2)*T)/(sigma*np.sqrt(T))
   d2 = d1 - sigma*np.sqrt(T)
+
+  if option_type_code == "C":
+      delta = norm.cdf(d1)
+  else:
+      delta = norm.cdf(d1) - 1
   gamma = norm.pdf(d1) / (S * sigma * np.sqrt(T))
   vega = S * norm.pdf(d1) * np.sqrt(T)
     

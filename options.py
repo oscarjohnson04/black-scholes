@@ -32,6 +32,7 @@ vol_choice = st.radio("Select Volatility Type", ("Historical", "Custom"))
 if vol_choice == "Historical":
     returns = df['Close'].pct_change().dropna()
     window = st.text_input("Enter the time window", "30")
+    window = int(window)
     rolling_std = returns.rolling(window=window).std()
     sigma_last = rolling_std.iloc[-1]
     sigma = sigma_last * np.sqrt(252)  # last value

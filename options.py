@@ -21,7 +21,7 @@ df = yf.download(ticker, start, end)
 r=0.01 #risk free rate
 S = df['Close'].iloc[-1] #base price
 st.write(S)
-K = st.number_input("Strike Price")
+K = st.text_input("Strike Price")
 #K=200 #strike
 T=240/365
 sigma = 0.3 #volatility?

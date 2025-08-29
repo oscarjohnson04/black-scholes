@@ -28,7 +28,12 @@ r = r_percent / 100
 sigma = st.slider("Enter the volatility (σ)", 0.0, 1.0, value=0.3, step=0.01, format="%.2f")
 T = st.slider("Time to Maturity (in days)", 1, 365, value=240, step=1) / 365
 
-def black_scholes(r, S, K, T, sigma, type = "C"):
+option_type = st.radio("Select Option Type", ("Call", "Put"))
+
+# Map it to the 'C' or 'P' needed by the function
+option_type_code = "C" if option_type == "Call" else "P"
+
+def black_scholes(r, S, K, T, sigma, type = option_type_code):
   d1 = (np.log(S/K) + (r + sigma**2/2)*T)/(sigma*np.sqrt(T))
   d2 = d1 - sigma*np.sqrt(T)
   try:
@@ -43,5 +48,5 @@ def black_scholes(r, S, K, T, sigma, type = "C"):
       st.write("Error:", e)
       return None
 
-display_price = float(black_scholes(r, S, K, T, sigma, type="C"))
-st.write("Option Price is: ", round((display_price), 2))
+display_price = float(black_scholes(r, S, K, T, sigma, type=option_type_code))
+st.write(f"{option_type} Option Price is: ", round((display_price), 2))

@@ -2,3 +2,4 @@ yfinance
 numpy 
 scipy
 streamlit
+datetime

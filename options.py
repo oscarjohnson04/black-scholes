@@ -52,6 +52,18 @@ option_type_code = "C" if option_type == "Call" else "P"
 def black_scholes(r, S, K, T, sigma, type = option_type_code):
   d1 = (np.log(S/K) + (r + sigma**2/2)*T)/(sigma*np.sqrt(T))
   d2 = d1 - sigma*np.sqrt(T)
+  gamma = norm.pdf(d1) / (S * sigma * np.sqrt(T))
+  vega = S * norm.pdf(d1) * np.sqrt(T)
+    
+  if option_type_code == "C":
+      theta = -(S * norm.pdf(d1) * sigma) / (2 * np.sqrt(T)) - r * K * np.exp(-r*T) * norm.cdf(d2)
+  else:
+      theta = -(S * norm.pdf(d1) * sigma) / (2 * np.sqrt(T)) + r * K * np.exp(-r*T) * norm.cdf(-d2)
+  if option_type_code == "C":
+      rho = K * T * np.exp(-r*T) * norm.cdf(d2)
+  else:
+      rho = -K * T * np.exp(-r*T) * norm.cdf(-d2)
+    
   try:
       if type.upper() == "C":
           price = S*norm.cdf(d1) - K*np.exp(-r*T)*norm.cdf(d2)
@@ -66,18 +78,4 @@ def black_scholes(r, S, K, T, sigma, type = option_type_code):
 
 display_price = float(black_scholes(r, S, K, T, sigma, type=option_type_code))
 st.write(f"{option_type} Option Price is: ", round((display_price), 2))
-
-gamma = norm.pdf(d1) / (S * sigma * np.sqrt(T))
-vega = S * norm.pdf(d1) * np.sqrt(T)
-
-if option_type_code == "C":
-    theta = -(S * norm.pdf(d1) * sigma) / (2 * np.sqrt(T)) - r * K * np.exp(-r*T) * norm.cdf(d2)
-else:
-    theta = -(S * norm.pdf(d1) * sigma) / (2 * np.sqrt(T)) + r * K * np.exp(-r*T) * norm.cdf(-d2)
-
-if option_type_code == "C":
-    rho = K * T * np.exp(-r*T) * norm.cdf(d2)
-else:
-    rho = -K * T * np.exp(-r*T) * norm.cdf(-d2)
-
 st.write(f"Delta: {delta:.4f}, Gamma: {gamma:.4f}, Vega: {vega:.4f}, Theta: {theta:.4f}, Rho: {rho:.4f}")

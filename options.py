@@ -29,6 +29,18 @@ sigma_percent = st.slider("Enter the volatility (%)", 0.0, 50.0, value=10.0, ste
 sigma = sigma_percent / 100
 T = st.slider("Time to Maturity (in days)", 1, 365, value=240, step=1) / 365
 
+vol_choice = st.radio("Select Volatility Type", ("Historical", "Custom"))
+
+if vol_choice == "Historical":
+    # Calculate historical volatility from last 30 trading days (annualized)
+    returns = df['Close'].pct_change().dropna()
+    sigma = returns.rolling(window=30).std().iloc[-1] * np.sqrt(252)
+    st.write(f"Historical Volatility (σ) calculated from past 30 days: {sigma:.2f}")
+else:
+    # Let user enter custom volatility via slider
+    sigma_percent = st.slider("Enter the volatility (%)", 0.0, 50.0, value=10.0, step=0.01, format="%.2f%%")
+    sigma = sigma_percent / 100
+  
 option_type = st.radio("Select Option Type", ("Call", "Put"))
 
 # Map it to the 'C' or 'P' needed by the function

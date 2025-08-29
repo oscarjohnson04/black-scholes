@@ -18,7 +18,7 @@ ticker = ticker_input.strip().upper()
 df = yf.download(ticker, start, end)
 
 #define variables
-S = df['Close'].iloc[-1] #base price
+S = float(df['Close'].iloc[-1]) #base price
 st.write(S)
 
 user_val = st.text_input("Enter the strike price", "0")

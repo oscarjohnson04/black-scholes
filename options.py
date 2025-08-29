@@ -84,5 +84,11 @@ vega = float(vega)
 theta = float(theta)
 rho = float(rho)
 
+greeks = pd.DataFrame({
+    "Greek": ["Delta", "Gamma", "Vega", "Theta", "Rho"],
+    "Value": [delta, gamma, vega, theta, rho]
+})
+
 st.write(f"{option_type} Option Price: {price:.2f}")
-st.write(f"Delta: {delta:.4f}, Gamma: {gamma:.4f}, Vega: {vega:.4f}, Theta: {theta:.4f}, Rho: {rho:.4f}")
+st.subheader("Option Greeks")
+st.table(greeks.style.format({"Value": "{:.4f}"}))

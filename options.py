@@ -12,7 +12,7 @@ st.set_page_config(layout="wide")
 
 st.title("Black-Scholes Options Pricing")
 
-ticker_input = st.text_input("Enter Ticker")
+ticker_input = st.text_input("Enter Ticker", value="AAPL")
 ticker = ticker_input.strip().upper()
 
 df = yf.download(ticker, start, end)
@@ -28,9 +28,9 @@ def black_scholes(r, S, K, T, sigma, type = "C"):
   d1 = (np.log(S/K) + (r + sigma**2/2)*T)/(sigma*np.sqrt(T))
   d2 = d1 - sigma*np.sqrt(T)
   try:
-      if option_type.upper() == "C":
+      if type.upper() == "C":
           price = S*norm.cdf(d1) - K*np.exp(-r*T)*norm.cdf(d2)
-      elif option_type.upper() == "P":
+      elif type.upper() == "P":
           price = K*np.exp(-r*T)*norm.cdf(-d2) - S*norm.cdf(-d1)
       else:
           raise ValueError("option_type must be 'C' or 'P'")

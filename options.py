@@ -77,5 +77,12 @@ def black_scholes(S, K, T, r, sigma, type=option_type_code):
 # CALCULATE
 price, delta, gamma, vega, theta, rho = black_scholes(S, K, T, r, sigma, option_type_code)
 
+price = float(price)
+delta = float(delta)
+gamma = float(gamma)
+vega = float(vega)
+theta = float(theta)
+rho = float(rho)
+
 st.write(f"{option_type} Option Price: {price:.2f}")
 st.write(f"Delta: {delta:.4f}, Gamma: {gamma:.4f}, Vega: {vega:.4f}, Theta: {theta:.4f}, Rho: {rho:.4f}")

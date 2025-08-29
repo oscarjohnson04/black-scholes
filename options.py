@@ -21,7 +21,7 @@ df = yf.download(ticker, start, end)
 S = float(round((df['Close'].iloc[-1]), 2)) #base price
 st.write("Latest closing price of chosen stock : ", S)
 
-user_val = st.text_input("Enter the strike price", "0")
+user_val = st.text_input("Enter the strike price", "0.01")
 K = float(user_val)
 r_percent = st.slider("Risk-free rate (%)", 0.0, 10.0, value=1.0, step=0.01, format="%.2f%%")
 r = r_percent / 100

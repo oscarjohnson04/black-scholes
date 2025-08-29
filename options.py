@@ -23,7 +23,7 @@ st.write(S)
 
 user_val = st.text_input("Enter the strike price", "0")
 K = float(user_val)
-r_percent = st.slider("Risk-free rate (%)", 0.0, 20.0, value=1.0, step=0.1, format="%.2f%%")
+r_percent = st.slider("Risk-free rate (%)", 0.0, 10.0, value=1.0, step=0.01, format="%.2f%%")
 r = r_percent / 100
 sigma = st.slider("Enter the volatility (σ)", 0.0, 1.0, value=0.3, step=0.01, format="%.2f")
 T = st.slider("Time to Maturity (in days)", 1, 365, value=240, step=1) / 365

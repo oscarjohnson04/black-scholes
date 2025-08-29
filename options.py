@@ -25,8 +25,6 @@ user_val = st.text_input("Enter the strike price", "0")
 K = float(user_val)
 r_percent = st.slider("Risk-free rate (%)", 0.0, 10.0, value=1.0, step=0.01, format="%.2f%%")
 r = r_percent / 100
-sigma_percent = st.slider("Enter the volatility (%)", 0.0, 50.0, value=10.0, step=0.01, format="%.2f%%")
-sigma = sigma_percent / 100
 T = st.slider("Time to Maturity (in days)", 1, 365, value=240, step=1) / 365
 
 vol_choice = st.radio("Select Volatility Type", ("Historical", "Custom"))

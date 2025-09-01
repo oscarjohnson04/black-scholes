@@ -115,9 +115,9 @@ with m2:
     st.metric("Current P/L (total)", f"{current_pl_total:,.2f}")
 
 if option_type_code == "C":
-    breakeven = K + price if side == "long" else K - price
+    breakeven = K + price 
 else:
-    breakeven = K - price if side == "long" else K + price
+    breakeven = K - price 
 st.caption(f"Breakeven at expiry (approx): {breakeven:.2f}")
 
 st.subheader("Payoff at Expiry")

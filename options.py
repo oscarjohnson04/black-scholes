@@ -93,3 +93,42 @@ greeks = pd.DataFrame({
 st.write(f"{option_type} Option Price: {price:.2f}")
 st.subheader("Option Greeks")
 st.dataframe(greeks.set_index('Greek').style.format("{:.4f}"), use_container_width=True)
+
+st.header("P/L Analysis")
+pl_col1, pl_col2, pl_col3 = st.columns(3)
+with pl_col1:
+    side = st.radio("Position", ("Long", "Short"), horizontal=True).lower()
+with pl_col2:
+    contracts = int(st.number_input("Contracts", min_value=1, max_value=10000, value=1, step=1))
+with pl_col3:
+    multiplier = int(st.number_input("Contract multiplier", min_value=1, max_value=10000, value=100, step=1))
+
+premium_per_contract = price if side == "short" else -price
+current_pl_per_contract = (price + premium_per_contract) if side == "long" else (premium_per_contract - price)
+current_pl_total = current_pl_per_contract * contracts * multiplier
+
+m1, m2 = st.columns(2)
+with m1:
+    st.metric("Current P/L (per contract)", f"{current_pl_per_contract:.2f}")
+with m2:
+    st.metric("Current P/L (total)", f"{current_pl_total:,.2f}")
+
+if option_type_code == "C":
+    breakeven = K + entry_price if side == "long" else K - entry_price
+else:
+    breakeven = K - entry_price if side == "long" else K + entry_price
+st.caption(f"Breakeven at expiry (approx): {breakeven:.2f}")
+
+st.subheader("Payoff at Expiry")
+S_min = float(max(0.01, S * 0.5))
+S_max = float(S * 1.5)
+S_T_grid = np.linspace(S_min, S_max, 201)
+pl_expiry_per_contract = payoff_at_expiration(S_T_grid, K, entry_price, opt_code, side)
+
+
+fig1 = go.Figure()
+fig1.add_trace(go.Scatter(x=S_T_grid, y=pl_expiry_per_contract, mode='lines', name='Payoff'))
+fig1.add_hline(y=0, line=dict(width=1))
+fig1.add_vline(x=breakeven, line=dict(width=1, dash='dash'))
+fig1.update_layout(title=f"{side.capitalize()} {opt_type} – Payoff at Expiry", xaxis_title="Underlying price at expiry S_T", yaxis_title="P/L per contract at expiry")
+st.plotly_chart(fig1, use_container_width=True)

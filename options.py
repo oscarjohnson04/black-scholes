@@ -114,16 +114,16 @@ with m2:
     st.metric("Current P/L (total)", f"{current_pl_total:,.2f}")
 
 if option_type_code == "C":
-    breakeven = K + entry_price if side == "long" else K - entry_price
+    breakeven = K + price if side == "long" else K - price
 else:
-    breakeven = K - entry_price if side == "long" else K + entry_price
+    breakeven = K - price if side == "long" else K + price
 st.caption(f"Breakeven at expiry (approx): {breakeven:.2f}")
 
 st.subheader("Payoff at Expiry")
 S_min = float(max(0.01, S * 0.5))
 S_max = float(S * 1.5)
 S_T_grid = np.linspace(S_min, S_max, 201)
-pl_expiry_per_contract = payoff_at_expiration(S_T_grid, K, entry_price, opt_code, side)
+pl_expiry_per_contract = payoff_at_expiration(S_T_grid, K, price, opt_code, side)
 
 
 fig1 = go.Figure()

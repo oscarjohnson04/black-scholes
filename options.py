@@ -145,12 +145,5 @@ fig1 = go.Figure()
 fig1.add_trace(go.Scatter(x=S_T_grid, y=pl_expiry_per_contract, mode='lines', name='Payoff'))
 fig1.add_hline(y=0, line=dict(width=1))
 fig1.add_vline(x=breakeven, line=dict(width=1, dash='dash'))
-fig1.add_trace(go.Scatter(
-    x=S_T_grid, y=pl_total_per_contract, mode='lines', name='P/L per contract'
-))
-fig1.add_trace(go.Scatter(
-    x=S_T_grid, y=pl_total, mode='lines', name='Total P/L',
-    line=dict(dash='dot')
-))
 fig1.update_layout(title=f"{side.capitalize()} {option_type} – Payoff at Expiry", xaxis_title="Underlying price at expiry S_T", yaxis_title="P/L per contract at expiry")
 st.plotly_chart(fig1, use_container_width=True)

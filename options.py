@@ -120,12 +120,12 @@ else:
 st.caption(f"Breakeven at expiry (approx): {breakeven:.2f}")
 
 st.subheader("Payoff at Expiry")
-def payoff_at_expiration(S_T: np.ndarray, K: float, premium: float, opt_type_code: str, side: str):
-    opt_type_code = opt_type_code.upper()
+def payoff_at_expiration(S_T: np.ndarray, K: float, premium: float, option_type_code: str, side: str):
+    option_type_code = option_type_code.upper()
     side = side.lower()
-    if opt_type_code == "C":
+    if option_type_code == "C":
         intrinsic = np.maximum(S_T - K, 0.0)
-    elif opt_type_code == "P":
+    elif option_type_code == "P":
         intrinsic = np.maximum(K - S_T, 0.0)
     else:
         raise ValueError("Option type must be 'C' or 'P'")
@@ -137,7 +137,7 @@ def payoff_at_expiration(S_T: np.ndarray, K: float, premium: float, opt_type_cod
 S_min = float(max(0.01, S * 0.5))
 S_max = float(S * 1.5)
 S_T_grid = np.linspace(S_min, S_max, 201)
-pl_expiry_per_contract = payoff_at_expiration(S_T_grid, K, price, opt_type_code, side)
+pl_expiry_per_contract = payoff_at_expiration(S_T_grid, K, price, option_type_code, side)
 
 
 fig1 = go.Figure()

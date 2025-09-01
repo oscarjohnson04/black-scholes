@@ -137,7 +137,7 @@ def payoff_at_expiration(S_T: np.ndarray, K: float, premium: float, opt_type_cod
 S_min = float(max(0.01, S * 0.5))
 S_max = float(S * 1.5)
 S_T_grid = np.linspace(S_min, S_max, 201)
-pl_expiry_per_contract = payoff_at_expiration(S_T_grid, K, price, opt_code, side)
+pl_expiry_per_contract = payoff_at_expiration(S_T_grid, K, price, opt_type_code, side)
 
 
 fig1 = go.Figure()

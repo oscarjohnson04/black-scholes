@@ -96,16 +96,22 @@ st.subheader("Option Greeks")
 st.dataframe(greeks.set_index('Greek').style.format("{:.4f}"), use_container_width=True)
 
 st.header("P/L Analysis")
-pl_col1, pl_col2, pl_col3 = st.columns(3)
+pl_col1, pl_col2, pl_col3, pl_col4 = st.columns(4)
 with pl_col1:
     side = st.radio("Position", ("Long", "Short"), horizontal=True).lower()
 with pl_col2:
     contracts = int(st.number_input("Contracts", min_value=1, max_value=10000, value=1, step=1))
 with pl_col3:
     multiplier = int(st.number_input("Contract multiplier", min_value=1, max_value=10000, value=100, step=1))
+with pl_col4:
+    entry_price = st.number_input("Entry premium (per option)", min_value=0.0, value=price, step=0.01)
+
 
 premium_per_contract = price if side == "short" else -price
-current_pl_per_contract = (price + premium_per_contract) if side == "long" else (premium_per_contract - price)
+if side == "long":
+    current_pl_per_contract = price - entry_price
+else:  
+    current_pl_per_contract = entry_price - price
 current_pl_total = current_pl_per_contract * contracts * multiplier
 
 m1, m2 = st.columns(2)

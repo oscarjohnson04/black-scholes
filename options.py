@@ -104,7 +104,7 @@ with pl_col2:
 with pl_col3:
     multiplier = int(st.number_input("Contract multiplier", min_value=1, max_value=10000, value=100, step=1))
 with pl_col4:
-    entry_price = st.number_input("Entry premium (per option)", min_value=0.0, value=price, step=0.01)
+    entry_price = round(st.number_input("Entry premium (per option)", min_value=0.0, value=price, step=0.01), 2)
 
 
 premium_per_contract = price if side == "short" else -price

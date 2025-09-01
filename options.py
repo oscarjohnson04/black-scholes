@@ -120,15 +120,15 @@ else:
 st.caption(f"Breakeven at expiry (approx): {breakeven:.2f}")
 
 st.subheader("Payoff at Expiry")
-def payoff_at_expiration(S_T: np.ndarray, K: float, premium: float, opt_type: str, side: str):
-    opt_type = opt_type.upper()
+def payoff_at_expiration(S_T: np.ndarray, K: float, premium: float, opt_type_code: str, side: str):
+    opt_type_code = opt_type_code.upper()
     side = side.lower()
     if opt_type_code == "C":
         intrinsic = np.maximum(S_T - K, 0.0)
     elif opt_type_code == "P":
         intrinsic = np.maximum(K - S_T, 0.0)
     else:
-        raise ValueError("opt_type must be 'C' or 'P'")
+        raise ValueError("Option type must be 'C' or 'P'")
         
     long_pl = intrinsic - premium
     short_pl = premium - intrinsic

@@ -93,6 +93,12 @@ greeks = pd.DataFrame({
 
 st.write(f"{option_type} Option Price: {price:.2f}")
 st.subheader("Option Greeks")
+with st.expander("ℹ️ Option Greeks"):
+    st.write("Delta: How much an option price changes from a $1 change in the underlying stock price")
+    st.write("Gamma: How quickly delta changes when there is a change in the underlying stock price")
+    st.write("Vega: How sensitive an option's price is to changes in expected market volatiltiy")
+    st.write("Theta: How much value an option loses each day as it gets to closer to expiry")
+    st.write("Rho: How sensitive an option's price is to changes in the risk-free rate")
 st.dataframe(greeks.set_index('Greek').style.format("{:.4f}"), use_container_width=True)
 
 st.header("P/L Analysis")
@@ -170,7 +176,7 @@ fig1.add_hline(y=0, line=dict(width=1))
 fig1.add_vline(x=breakeven, line=dict(width=1, dash='dash'))
 fig1.update_layout(
     title=f"{side.capitalize()} {option_type} – Payoff at Expiry",
-    xaxis_title="Underlying price at expiry S_T",
+    xaxis_title="Underlying price at expiry",
     yaxis_title="P/L per contract at expiry"
 )
 st.plotly_chart(fig1, use_container_width=True)

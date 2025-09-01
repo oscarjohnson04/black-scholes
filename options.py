@@ -129,11 +129,11 @@ def payoff_at_expiration(S_T: np.ndarray, K: float, premium: float, opt_type: st
         intrinsic = np.maximum(K - S_T, 0.0)
     else:
         raise ValueError("opt_type must be 'C' or 'P'")
+        
+    long_pl = intrinsic - premium
+    short_pl = premium - intrinsic
+    return long_pl if side == "long" else short_pl
 
-
-long_pl = intrinsic - premium
-short_pl = premium - intrinsic
-return long_pl if side == "long" else short_pl
 S_min = float(max(0.01, S * 0.5))
 S_max = float(S * 1.5)
 S_T_grid = np.linspace(S_min, S_max, 201)

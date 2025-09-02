@@ -93,7 +93,7 @@ with tab1:
         "Value": [delta, gamma, vega, theta, rho]
     })
     
-    st.write(f"{option_type} Option Price: {price:.2f}", key = "result_bn")
+    st.write(f"{option_type} Option Price: {price:.2f}")
     st.subheader("Option Greeks")
     with st.expander("ℹ️ Option Greeks"):
         st.write("Delta: How much an option price changes from a $1 change in the underlying stock price")
@@ -203,7 +203,7 @@ with tab2:
     returns2 = df2['Close'].pct_change().dropna()
     windowinput2 = st.text_input("Enter the time window", "30", key = "window_bn")
     window2 = int(windowinput2)
-    rolling_std2 = returns2.rolling(window2=window2).std()
+    rolling_std2 = returns2.rolling(window=window2).std()
     sigma_last2 = rolling_std2.iloc[-1]
     sigma2 = sigma_last2 * np.sqrt(252)
     u = np.exp(sigma2 * np.sqrt(dt))
@@ -212,6 +212,7 @@ with tab2:
     option_type_code2 = "C" if option_type2 == "Call" else "P"
 
     def binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2):
+        dt = T2/N
         q = (np.exp(r2*dt) - d) / (u-d)
         disc = np.exp(-r2*dt)
         ST = S2 * (u**np.arange(N, -1, -1)) * (d**np.arange(0, N+1, 1))
@@ -225,4 +226,4 @@ with tab2:
         return C[0]
 
     binom_price = binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2)
-    st.write(f"{option_type2} Option Price: {binom_price:.2f}", key = "result_bn")
+    st.write(f"{option_type2} Option Price: {binom_price:.2f}")

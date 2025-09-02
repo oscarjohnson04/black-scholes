@@ -48,7 +48,7 @@ with tab1:
         sigma_percent = st.slider("Enter the volatility (%)", 0.0, 50.0, value=10.0, step=0.01, format="%.2f%%")
         sigma = sigma_percent / 100
       
-    option_type = st.radio("Select Option Type", ("Call", "Put"))
+    option_type = st.radio("Select Option Type", ("Call", "Put"), key="type_bs")
     
     # Map it to the 'C' or 'P' needed by the function
     option_type_code = "C" if option_type == "Call" else "P"
@@ -198,3 +198,9 @@ with tab2:
     r_percent2 = st.slider("Risk-free rate (%)", 0.0, 10.0, value=1.0, step=0.01, format="%.2f%%", key="interest_bn")
     r2 = r_percent2 / 100
     T2 = st.slider("Time to Maturity (in years)", 1, 50, value=5, step=1, key="time_bn") 
+    N = st.slider("Number of time steps", 1, 50, value=5, step=1) 
+    u = 1.1
+    d = 1/u
+    option_type2 = st.radio("Select Option Type", ("Call", "Put"), key="type_bn")
+    option_type_code2 = "C" if option_type2 == "Call" else "P"
+    

@@ -184,7 +184,6 @@ with tab1:
     st.plotly_chart(fig1, use_container_width=True)
 
 with tab2:
-    st.plotly_chart(fig1, use_container_width=True)
     ticker_input2 = st.text_input("Enter Ticker", value="AAPL")
     ticker2 = ticker_input.strip().upper()
     

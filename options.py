@@ -35,8 +35,8 @@ with tab1:
     
     if vol_choice == "Historical":
         returns = df['Close'].pct_change().dropna()
-        window2 = st.text_input("Enter the time window", "30")
-        window = int(window2)
+        windowinput = st.text_input("Enter the time window", "30", key = "window_bs")
+        window = int(windowinput)
         rolling_std = returns.rolling(window=window).std()
         sigma_last = rolling_std.iloc[-1]
         sigma = sigma_last * np.sqrt(252)  # last value
@@ -199,13 +199,19 @@ with tab2:
     r2 = r_percent2 / 100
     T2 = st.slider("Time to Maturity (in years)", 1, 50, value=5, step=1, key="time_bn") 
     N = st.slider("Number of time steps", 1, 50, value=5, step=1) 
-    u = 1.1
+    dt = T2/N
+    returns = df2['Close'].pct_change().dropna()
+    windowinput2 = st.text_input("Enter the time window", "30", key = "window_bn")
+    window2 = int(windowinput2)
+    rolling_std2 = returns2.rolling(window2=window2).std()
+    sigma_last2 = rolling_std2.iloc[-1]
+    sigma2 = sigma_last2 * np.sqrt(252)
+    u = np.exp(sigma2 * np.sqrt(dt))
     d = 1/u
     option_type2 = st.radio("Select Option Type", ("Call", "Put"), key="type_bn")
     option_type_code2 = "C" if option_type2 == "Call" else "P"
 
     def binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2):
-        dt = T2/N
         q = (np.exp(r2*dt) - d) / (u-d)
         disc = np.exp(-r2*dt)
         ST = S2 * (u**np.arange(N, -1, -1)) * (d**np.arange(0, N+1, 1))

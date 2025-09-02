@@ -15,7 +15,7 @@ st.set_page_config(layout="wide")
 st.title("Black-Scholes Options Pricing")
 
 tab1, tab2 = st.tabs(["Black-Scholes Model", "Binomial Model"])
-with tab:1
+with tab1:
     ticker_input = st.text_input("Enter Ticker", value="AAPL")
     ticker = ticker_input.strip().upper()
     

@@ -184,4 +184,5 @@ with tab1:
     st.plotly_chart(fig1, use_container_width=True)
 
 with tab2:
+    st.plotly_chart(fig1, use_container_width=True)
     

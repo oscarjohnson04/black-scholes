@@ -40,7 +40,7 @@ with tab1:
         rolling_std = returns.rolling(window=window).std()
         sigma_last = rolling_std.iloc[-1]
         sigma = sigma_last * np.sqrt(252)  # last value
-        sigma_display = float(round((sigma), 4)) * 100
+        sigma_display = float(round((sigma*100), 4))
         sigma_display = str(sigma_display) + "%"
         st.write("Historical Volatility calculated from past ", window," days: ", sigma_display)
     else:

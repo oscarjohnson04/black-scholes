@@ -209,10 +209,10 @@ with tab2:
         q = (np.exp(r2*dt) - d) / (u-d)
         disc = np.exp(-r2*dt)
         ST = S2 * (u**np.arange(N, -1, -1)) * (d**np.arange(0, N+1, 1))
-        if option_type == "C":
-            C = np.maximum(ST - K, 0.0)
+        if option_type_code2 == "C":
+            C = np.maximum(ST - K2, 0.0)
         else:  # Put
-            C = np.maximum(K - ST, 0.0)
+            C = np.maximum(K2 - ST, 0.0)
         for i in np.arange(N,0,-1):
             C = disc * ( q * C[1:i+1] + (1-q) * C[0:i])
 

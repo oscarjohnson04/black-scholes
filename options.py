@@ -45,7 +45,7 @@ with tab1:
         st.write("Historical Volatility calculated from past ", window," days: ", sigma_display)
     else:
             # Let user enter custom volatility via slider
-        sigma_percent = st.slider("Enter the volatility (%)", 0.0, 50.0, value=10.0, step=0.01, format="%.2f%%")
+        sigma_percent = st.slider("Enter the volatility (%)", 0.0, 50.0, value=10.0, step=0.01, format="%.2f%%", key="volcustom_bs")
         sigma = sigma_percent / 100
       
     option_type = st.radio("Select Option Type", ("Call", "Put"), key="type_bs")
@@ -200,6 +200,21 @@ with tab2:
     T2 = st.slider("Time to Maturity (in years)", 1, 50, value=5, step=1, key="time_bn") 
     N = st.slider("Number of time steps", 1, 50, value=5, step=1) 
     dt = T2/N
+    vol_choice2 = st.radio("Select Volatility Type", ("Historical", "Custom"), key ="vol_bn")  
+    if vol_choice == "Historical":
+        returns2 = df2['Close'].pct_change().dropna()
+        windowinput2 = st.text_input("Enter the time window", "30", key = "window_bn")
+        window2 = int(windowinput2)
+        rolling_std2 = returns2.rolling(window=window2).std()
+        sigma_last2 = float(rolling_std2.iloc[-1])
+        sigma2 = sigma_last2 * np.sqrt(252)
+        sigma_display2 = round((sigma), 4) * 100
+        sigma_display2 = str(sigma_display2) + "%"
+        st.write("Historical Volatility calculated from past ", window2," days: ", sigma_display2)
+    else:
+            # Let user enter custom volatility via slider
+        sigma_percent2 = st.slider("Enter the volatility (%)", 0.0, 50.0, value=10.0, step=0.01, format="%.2f%%", key="volcustom_bn")
+        sigma2 = sigma_percent2 / 100
     returns2 = df2['Close'].pct_change().dropna()
     windowinput2 = st.text_input("Enter the time window", "30", key = "window_bn")
     window2 = int(windowinput2)

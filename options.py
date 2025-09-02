@@ -185,16 +185,16 @@ with tab1:
 
 with tab2:
     ticker_input2 = st.text_input("Enter Ticker", value="AAPL")
-    ticker2 = ticker_input.strip().upper()
+    ticker2 = ticker_input2.strip().upper()
     
-    df2 = yf.download(ticker, start, end)
+    df2 = yf.download(ticker2, start, end)
     
     #define variables
     S2 = float(round((df2['Close'].iloc[-1]), 2)) #base price
     st.write("Latest closing price of chosen stock : ", S2)
     
     user_val2 = st.text_input("Enter the strike price", "0.01")
-    K2 = float(user_val)
+    K2 = float(user_val2)
     r_percent2 = st.slider("Risk-free rate (%)", 0.0, 10.0, value=1.0, step=0.01, format="%.2f%%")
-    r2 = r_percent / 100
+    r2 = r_percent2 / 100
     T2 = st.slider("Time to Maturity (in years)", 1, 50, value=5, step=1) 

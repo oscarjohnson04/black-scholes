@@ -31,7 +31,7 @@ with tab1:
     r = r_percent / 100
     T = st.slider("Time to Maturity (in days)", 1, 365, value=240, step=1, key="time_bs") / 365
     
-    vol_choice = st.radio("Select Volatility Type", ("Historical", "Custom"))
+    vol_choice = st.radio("Select Volatility Type", ("Historical", "Custom"), key ="vol_bs")
     
     if vol_choice == "Historical":
         returns = df['Close'].pct_change().dropna()
@@ -204,7 +204,7 @@ with tab2:
     windowinput2 = st.text_input("Enter the time window", "30", key = "window_bn")
     window2 = int(windowinput2)
     rolling_std2 = returns2.rolling(window=window2).std()
-    sigma_last2 = rolling_std2.iloc[-1]
+    sigma_last2 = float(rolling_std2.iloc[-1])
     sigma2 = sigma_last2 * np.sqrt(252)
     u = np.exp(sigma2 * np.sqrt(dt))
     d = 1/u

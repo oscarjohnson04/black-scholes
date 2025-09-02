@@ -93,7 +93,7 @@ with tab1:
         "Value": [delta, gamma, vega, theta, rho]
     })
     
-    st.write(f"{option_type} Option Price: {price:.2f}")
+    st.write(f"{option_type} Option Price: {price:.2f}", key = "result_bn")
     st.subheader("Option Greeks")
     with st.expander("ℹ️ Option Greeks"):
         st.write("Delta: How much an option price changes from a $1 change in the underlying stock price")
@@ -203,4 +203,17 @@ with tab2:
     d = 1/u
     option_type2 = st.radio("Select Option Type", ("Call", "Put"), key="type_bn")
     option_type_code2 = "C" if option_type2 == "Call" else "P"
-    
+
+    def binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2):
+        dt = T2/N
+        q = (np.exp(r*dt) - d) / (u-d)
+        disc = np.exp(-r*dt)
+        C = S2 * d ** (np.arrange(N,-1,-1)) * u ** (np.arrange(0,N+1,1))
+        C = np.maximum( C - K2, np.zeros(N+1))
+        for i in np.arrange(N,0,-1):
+            C = disc * ( q * C[1:i+1] + (1-q) * C[0:i])
+
+        return C[0]
+
+    binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2)
+    st.write(f"{option_type2} Option Price: {C[0]:.2f}", key = "result_bn")

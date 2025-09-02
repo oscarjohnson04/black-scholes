@@ -206,14 +206,17 @@ with tab2:
 
     def binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2):
         dt = T2/N
-        q = (np.exp(r*dt) - d) / (u-d)
-        disc = np.exp(-r*dt)
-        C = S2 * d ** (np.arrange(N,-1,-1)) * u ** (np.arrange(0,N+1,1))
-        C = np.maximum( C - K2, np.zeros(N+1))
-        for i in np.arrange(N,0,-1):
+        q = (np.exp(r2*dt) - d) / (u-d)
+        disc = np.exp(-r2*dt)
+        ST = S2 * (u**np.arange(N, -1, -1)) * (d**np.arange(0, N+1, 1))
+        if option_type == "C":
+            C = np.maximum(ST - K, 0.0)
+        else:  # Put
+            C = np.maximum(K - ST, 0.0)
+        for i in np.arange(N,0,-1):
             C = disc * ( q * C[1:i+1] + (1-q) * C[0:i])
 
         return C[0]
 
-    binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2)
-    st.write(f"{option_type2} Option Price: {C[0]:.2f}", key = "result_bn")
+    binom_price = binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2)
+    st.write(f"{option_type2} Option Price: {binom_price:.2f}", key = "result_bn")

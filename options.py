@@ -200,7 +200,7 @@ with tab2:
     T2 = st.slider("Time to Maturity (in years)", 1, 50, value=5, step=1, key="time_bn") 
     N = st.slider("Number of time steps", 1, 50, value=5, step=1) 
     dt = T2/N
-    returns = df2['Close'].pct_change().dropna()
+    returns2 = df2['Close'].pct_change().dropna()
     windowinput2 = st.text_input("Enter the time window", "30", key = "window_bn")
     window2 = int(windowinput2)
     rolling_std2 = returns2.rolling(window2=window2).std()

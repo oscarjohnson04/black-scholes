@@ -16,7 +16,7 @@ st.title("Options Pricing Models")
 
 tab1, tab2 = st.tabs(["Black-Scholes Model", "Binomial Model"])
 with tab1:
-    ticker_input = st.text_input("Enter Ticker", value="AAPL")
+    ticker_input = st.text_input("Enter Ticker", value="AAPL", key="ticker_bs")
     ticker = ticker_input.strip().upper()
     
     df = yf.download(ticker, start, end)
@@ -25,11 +25,11 @@ with tab1:
     S = float(round((df['Close'].iloc[-1]), 2)) #base price
     st.write("Latest closing price of chosen stock : ", S)
     
-    user_val = st.text_input("Enter the strike price", "0.01")
+    user_val = st.text_input("Enter the strike price", "0.01", key="strike_bs")
     K = float(user_val)
-    r_percent = st.slider("Risk-free rate (%)", 0.0, 10.0, value=1.0, step=0.01, format="%.2f%%")
+    r_percent = st.slider("Risk-free rate (%)", 0.0, 10.0, value=1.0, step=0.01, format="%.2f%%", key="interest_bs")
     r = r_percent / 100
-    T = st.slider("Time to Maturity (in days)", 1, 365, value=240, step=1) / 365
+    T = st.slider("Time to Maturity (in days)", 1, 365, value=240, step=1, key="time_bs") / 365
     
     vol_choice = st.radio("Select Volatility Type", ("Historical", "Custom"))
     
@@ -184,7 +184,7 @@ with tab1:
     st.plotly_chart(fig1, use_container_width=True)
 
 with tab2:
-    ticker_input2 = st.text_input("Enter Ticker", value="AAPL")
+    ticker_input2 = st.text_input("Enter Ticker", value="AAPL", key="ticker_bn")
     ticker2 = ticker_input2.strip().upper()
     
     df2 = yf.download(ticker2, start, end)
@@ -193,8 +193,8 @@ with tab2:
     S2 = float(round((df2['Close'].iloc[-1]), 2)) #base price
     st.write("Latest closing price of chosen stock : ", S2)
     
-    user_val2 = st.text_input("Enter the strike price", "0.01")
+    user_val2 = st.text_input("Enter the strike price", "0.01", key="strike_bn")
     K2 = float(user_val2)
-    r_percent2 = st.slider("Risk-free rate (%)", 0.0, 10.0, value=1.0, step=0.01, format="%.2f%%")
+    r_percent2 = st.slider("Risk-free rate (%)", 0.0, 10.0, value=1.0, step=0.01, format="%.2f%%", key="interest_bn")
     r2 = r_percent2 / 100
-    T2 = st.slider("Time to Maturity (in years)", 1, 50, value=5, step=1) 
+    T2 = st.slider("Time to Maturity (in years)", 1, 50, value=5, step=1, key="time_bn") 

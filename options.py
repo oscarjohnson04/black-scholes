@@ -222,7 +222,7 @@ with tab2:
     d = 1/u
     option_type2 = st.radio("Select Option Type", ("Call", "Put"), key="type_bn")
     option_type_code2 = "C" if option_type2 == "Call" else "P"
-    barrier_type = st.radio("Select Barrier Type", ("Up-and-Out", "Down-and-Out", "Up-and-In", "Down-and-In"))
+    #barrier_type = st.radio("Select Barrier Type", ("Up-and-Out", "Down-and-Out", "Up-and-In", "Down-and-In"))
 
     def binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2):
         dt = T2/N
@@ -241,7 +241,7 @@ with tab2:
     binom_price = binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2)
     st.write(f"{option_type2} Option Price: {binom_price:.2f}")
 
-    def barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type):
+    def barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2):
         dt2 = T2/N
         q2 = (np.exp(r2*dt2) - d)/(u-d)
         disc2 = np.exp(-r2*dt2)
@@ -254,33 +254,14 @@ with tab2:
         else:
             C2 = np.maximum( K2 - ST2, 0 )
 
-        if "up" in barrier_type:
-            if "out" in barrier_type:
-                C2[ST2 >= B] = 0
-            elif "in" in barrier_type:
-                C2[ST2 < B] = 0
-        elif "down" in barrier_type:
-            if "out" in barrier_type:
-                C2[ST2 <= B] = 0
-            elif "in" in barrier_type:
-                C2[ST2 > B] = 0
+        C2[ST2 >= B] = 0
 
     # backward recursion through the tree
         for i in np.arange(N-1,-1,-1):
             ST2 = S2 * d**(np.arange(i,-1,-1)) * u**(np.arange(0,i+1,1))
             C2[:i+1] = disc2 * ( q2 * C2[1:i+2] + (1-q2) * C2[0:i+1] )
             C2 = C2[:-1]
-            if "up" in barrier_type:
-                if "out" in barrier_type:
-                    C2[ST2 >= B] = 0
-                elif "in" in barrier_type:
-                    C2[ST2 < B] = 0
-            elif "down" in barrier_type:
-                if "out" in barrier_type:
-                    C2[ST2 <= B] = 0
-                elif "in" in barrier_type:
-                    C2[ST2 > B] = 0
+            C2[ST2 >= B] = 0
         return C2[0]
-
-    barrier_price = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)
+    barrier_price = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2)
     st.write(f"{option_type2} Barrier Option Price: {barrier_price:.2f}")

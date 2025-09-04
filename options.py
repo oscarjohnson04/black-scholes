@@ -241,7 +241,7 @@ with tab2:
     binom_price = binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2)
     st.write(f"{option_type2} Option Price: {binom_price:.2f}")
 
-    def barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2):
+    def barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type):
         dt2 = T2/N
         q2 = (np.exp(r2*dt2) - d)/(u-d)
         disc2 = np.exp(-r2*dt2)
@@ -282,5 +282,5 @@ with tab2:
                     C2[ST2 > B] = 0
         return C2[0]
 
-    barrier_price = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2)
+    barrier_price = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)
     st.write(f"{option_type2} Barrier Option Price: {barrier_price:.2f}")

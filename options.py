@@ -270,7 +270,7 @@ with tab2:
                 C2[ST2 <= B] = 0
         return C2[0]
 
-    def barrier_price(S0, K, B, r, T, N, u, d, opt_type, barrier_type):
+    def barrier_price(S2, K2, B, r2, T2, N2, u, d, option_type, barrier_type):
         if "Out" in barrier_type:
             return barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)
         else:  # Knock-In = Vanilla - Knock-Out

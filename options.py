@@ -195,6 +195,8 @@ with tab2:
     
     user_val2 = st.text_input("Enter the strike price", "0.01", key="strike_bn")
     K2 = float(user_val2)
+    userh_val = st.text_input("Enter the barrier price", "0.01", key="barrier_bn")
+    B = float(userh_val)
     r_percent2 = st.slider("Risk-free rate (%)", 0.0, 10.0, value=1.0, step=0.01, format="%.2f%%", key="interest_bn")
     r2 = r_percent2 / 100
     T2 = st.slider("Time to Maturity (in years)", 1, 50, value=5, step=1, key="time_bn") 
@@ -234,6 +236,33 @@ with tab2:
             C = disc * ( q * C[1:i+1] + (1-q) * C[0:i])
 
         return C[0]
-
+    
     binom_price = binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2)
     st.write(f"{option_type2} Option Price: {binom_price:.2f}")
+
+    def barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2):
+        dt2 = T2/N
+        q2 = (np.exp(r2*dt2) - d)/(u-d)
+        disc2 = np.exp(-r2*dt2)
+
+    # initialise asset prices at maturity
+        ST2 = S2 * (u**np.arange(N, -1, -1)) * (d**np.arange(0, N+1, 1))
+    # option payoff
+        if option_type_code2 == 'C':
+            C2 = np.maximum( ST2 - K2, 0 )
+        else:
+            C2 = np.maximum( K2 - ST2, 0 )
+
+    # check terminal condition payoff
+        C2[ST2 >= B] = 0
+
+    # backward recursion through the tree
+        for i in np.arange(N-1,-1,-1):
+            ST2 = S2 * d**(np.arange(i,-1,-1)) * u**(np.arange(0,i+1,1))
+            C2[:i+1] = disc2 * ( q2 * C2[1:i+2] + (1-q2) * C2[0:i+1] )
+            C2 = C2[:-1]
+            C2[ST2 >= B] = 0
+        return C2[0]
+
+    barrier_price = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2)
+    st.write(f"{option_type2} Barrier Option Price: {barrier_price:.2f}")

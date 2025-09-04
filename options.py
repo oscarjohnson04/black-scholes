@@ -222,7 +222,7 @@ with tab2:
     d = 1/u
     option_type2 = st.radio("Select Option Type", ("Call", "Put"), key="type_bn")
     option_type_code2 = "C" if option_type2 == "Call" else "P"
-    barrier_type = st.radio("Select Barrier Type", ("Up-and-Out", "Down-and-Out", "Up-and-In", "Down-and-In"))
+    barrier_type = st.radio("Select Barrier Type", ("Up-and-Out", "Down-and-Out"))
 
     def binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2):
         dt = T2/N
@@ -256,12 +256,8 @@ with tab2:
 
         if barrier_type == "Up-and-Out":
             C2[ST2 >= B] = 0
-        elif barrier_type == "Up-and-In":
-            C2[ST2 < B] = 0
         elif barrier_type == "Down-and-Out":
             C2[ST2 <= B] = 0
-        elif barrier_type == "Down-and-In":
-            C2[ST2 > B] = 0
 
     # backward recursion through the tree
         for i in np.arange(N-1,-1,-1):
@@ -270,12 +266,20 @@ with tab2:
             C2 = C2[:-1]
             if barrier_type == "Up-and-Out":
                 C2[ST2 >= B] = 0
-            elif barrier_type == "Up-and-In":
-                    C2[ST2 < B] = 0
             elif barrier_type == "Down-and-Out":
-                    C2[ST2 <= B] = 0
-            elif barrier_type == "Down-and-In":
-                C2[ST2 > B] = 0
+                C2[ST2 <= B] = 0
         return C2[0]
-    barrier_price = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)
+
+    def barrier_price(S0, K, B, r, T, N, u, d, opt_type, barrier_type):
+    if "Out" in barrier_type:
+        return barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)
+    else:  # Knock-In = Vanilla - Knock-Out
+        vanilla = binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2)
+        if "Up" in barrier_type:
+            kout = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, "Up-and-Out")
+        else:
+            kout = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, "Down-and-Out")
+        return vanilla - kout
+        
+    barrier_price = barrier_price(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)
     st.write(f"{option_type2} Barrier Option Price: {barrier_price:.2f}")

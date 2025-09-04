@@ -281,5 +281,5 @@ with tab2:
                 kout = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, "Down-and-Out")
             return vanilla - kout
         
-    barrier_price = barrier_price(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)
-    st.write(f"{option_type2} Barrier Option Price: {barrier_price:.2f}")
+    display_barrier_price = barrier_price(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)
+    st.write(f"{option_type2} Barrier Option Price: {display_barrier_price:.2f}")

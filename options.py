@@ -256,11 +256,11 @@ with tab2:
 
         if barrier_type == "Up-and-Out":
             C2[ST2 >= B] = 0
-            elif barrier_type == "Up-and-In":
-                C2[ST2 < B] = 0
-            elif barrier_type == "Down-and-Out":
-                C2[ST2 <= B] = 0
-        else:
+        elif barrier_type == "Up-and-In":
+            C2[ST2 < B] = 0
+        elif barrier_type == "Down-and-Out":
+            C2[ST2 <= B] = 0
+        elif barrier_type == "Down-and-In":
             C2[ST2 > B] = 0
 
     # backward recursion through the tree
@@ -270,11 +270,11 @@ with tab2:
             C2 = C2[:-1]
             if barrier_type == "Up-and-Out":
                 C2[ST2 >= B] = 0
-                elif barrier_type == "Up-and-In":
+            elif barrier_type == "Up-and-In":
                     C2[ST2 < B] = 0
-                elif barrier_type == "Down-and-Out":
+            elif barrier_type == "Down-and-Out":
                     C2[ST2 <= B] = 0
-            else:
+            elif barrier_type == "Down-and-In":
                 C2[ST2 > B] = 0
         return C2[0]
     barrier_price = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)

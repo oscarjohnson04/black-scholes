@@ -271,15 +271,15 @@ with tab2:
         return C2[0]
 
     def barrier_price(S0, K, B, r, T, N, u, d, opt_type, barrier_type):
-    if "Out" in barrier_type:
-        return barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)
-    else:  # Knock-In = Vanilla - Knock-Out
-        vanilla = binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2)
-        if "Up" in barrier_type:
-            kout = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, "Up-and-Out")
-        else:
-            kout = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, "Down-and-Out")
-        return vanilla - kout
+        if "Out" in barrier_type:
+            return barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)
+        else:  # Knock-In = Vanilla - Knock-Out
+            vanilla = binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2)
+            if "Up" in barrier_type:
+                kout = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, "Up-and-Out")
+            else:
+                kout = barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, "Down-and-Out")
+            return vanilla - kout
         
     barrier_price = barrier_price(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)
     st.write(f"{option_type2} Barrier Option Price: {barrier_price:.2f}")

@@ -241,34 +241,37 @@ with tab2:
     binom_price = binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2)
     st.write(f"{option_type2} Option Price: {binom_price:.2f}")
 
-    def barrier_tree(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type):
-        dt2 = T2/N
-        q2 = (np.exp(r2*dt2) - d)/(u-d)
-        disc2 = np.exp(-r2*dt2)
+    def barrier_tree(K2, T2, S2, B, r2, N, u, d, option_type_code2, barrier_type):
+    dt2 = T2 / N
+    q2 = (np.exp(r2 * dt2) - d) / (u - d)
+    disc2 = np.exp(-r2 * dt2)
 
-    # initialise asset prices at maturity
-        ST2 = S2 * (u**np.arange(N, -1, -1)) * (d**np.arange(0, N+1, 1))
-    # option payoff
-        if option_type_code2 == 'C':
-            C2 = np.maximum( ST2 - K2, 0 )
-        else:
-            C2 = np.maximum( K2 - ST2, 0 )
+    # Initialize option values at maturity
+    ST2 = S2 * (u ** np.arange(N, -1, -1)) * (d ** np.arange(0, N + 1, 1))
+    if option_type_code2 == "C":
+        C2 = np.maximum(ST2 - K2, 0)
+    else:
+        C2 = np.maximum(K2 - ST2, 0)
 
+    # Apply barrier condition at maturity
+    if barrier_type == "Up-and-Out":
+        C2[ST2 >= B] = 0
+    elif barrier_type == "Down-and-Out":
+        C2[ST2 <= B] = 0
+
+    # Backward recursion
+    for i in np.arange(N - 1, -1, -1):
+        ST2 = S2 * d ** (np.arange(i, -1, -1)) * u ** (np.arange(0, i + 1, 1))
+        C2[: i + 1] = disc2 * (q2 * C2[1 : i + 2] + (1 - q2) * C2[0 : i + 1])
+        C2 = C2[:-1]
+
+        # Barrier condition applied again at each node
         if barrier_type == "Up-and-Out":
             C2[ST2 >= B] = 0
         elif barrier_type == "Down-and-Out":
             C2[ST2 <= B] = 0
 
-    # backward recursion through the tree
-        for i in np.arange(N-1,-1,-1):
-            ST2 = S2 * d**(np.arange(i,-1,-1)) * u**(np.arange(0,i+1,1))
-            C2[:i+1] = disc2 * ( q2 * C2[1:i+2] + (1-q2) * C2[0:i+1] )
-            C2 = C2[:-1]
-            if barrier_type == "Up-and-Out":
-                C2[ST2 >= B] = 0
-            elif barrier_type == "Down-and-Out":
-                C2[ST2 <= B] = 0
-        return C2[0]
+    return C2[0]
 
     def barrier_price(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type):
         if "Out" in barrier_type:

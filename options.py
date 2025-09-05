@@ -298,9 +298,9 @@ with tab2:
     
         # option payoff
         if option_type_code2 == 'P':
-            C_USA = np.maximum(0, K2 - S2)
+            C_USA = np.maximum(0, K2 - S_USA)
         else:
-            C_USA = np.maximum(0, S2 - K2)
+            C_USA = np.maximum(0, S_USA - K2)
     
         # backward recursion through the tree
         for i in np.arange(N-1,-1,-1):

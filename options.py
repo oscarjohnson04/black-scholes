@@ -308,9 +308,9 @@ with tab2:
             C_USA[:i+1] = discUSA * ( qUSA*C_USA[1:i+2] + (1-qUSA)*C_USA[0:i+1] )
             C_USA = C_USA[:-1]
             if option_type_code2 == 'P':
-                C_USA = np.maximum(C_USA, K2 - S2)
+                C_USA = np.maximum(C_USA, K2 - S_USA)
             else:
-                C_USA = np.maximum(C_USA, S2 - K2)
+                C_USA = np.maximum(C_USA, S_USA - K2)
     
         return C_USA[0]
     

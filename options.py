@@ -286,3 +286,33 @@ with tab2:
         
     display_barrier_price = barrier_price(K2,T2,S2,B,r2,N,u,d,option_type_code2, barrier_type)
     st.write(f"{option_type2} Barrier Option Price: {display_barrier_price:.2f}")
+
+    def american_tree(K2,T2,S2,r2,N,u,d,option_type_code2):
+        #precompute values
+        dtUSA = T2/N
+        qUSA = (np.exp(r2*dtUSA) - d)/(u-d)
+        discUSA = np.exp(-r2*dtUSA)
+    
+        # initialise stock prices at maturity
+        S_USA = S2 * d**(np.arange(N,-1,-1)) * u**(np.arange(0,N+1,1))
+    
+        # option payoff
+        if option_type_code2 == 'P':
+            C_USA = np.maximum(0, K2 - S2)
+        else:
+            C_USA = np.maximum(0, S2 - K2)
+    
+        # backward recursion through the tree
+        for i in np.arange(N-1,-1,-1):
+            S_USA = S2 * d**(np.arange(i,-1,-1)) * u**(np.arange(0,i+1,1))
+            C_USA[:i+1] = discUSA * ( qUSA*C_USA[1:i+2] + (1-qUSA)*C_USA[0:i+1] )
+            C_USA = C_USA[:-1]
+            if option_type_code2 == 'P':
+                C_USA = np.maximum(C_USA, K2 - S2)
+            else:
+                C_USA = np.maximum(C_USA, S2 - K2)
+    
+        return C_USA[0]
+    
+    US_price = american_tree(K2,T2,S2,r2,N,u,d,option_type_code2)
+    st.write(f"{option_type2} American Option Price: {US_price:.2f}")

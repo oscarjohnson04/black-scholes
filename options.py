@@ -183,6 +183,67 @@ with tab1:
     )
     st.plotly_chart(fig1, use_container_width=True)
 
+    st.subheader("3D Surface Plot of Option Price")
+
+    surface_choice = st.radio(
+        "Select dimension for surface plot",
+        ("Underlying Price vs. Time to Maturity", "Underlying Price vs. Volatility"),
+        key="surface_choice"
+    )
+
+    # Range of underlying prices
+    S_range = np.linspace(S*0.5, S*1.5, 50)
+
+    if surface_choice == "Underlying Price vs. Time to Maturity":
+        T_range = np.linspace(0.01, 1, 50)  # up to 1 year
+        S_grid, T_grid = np.meshgrid(S_range, T_range)
+        Z = np.zeros_like(S_grid)
+
+        for i in range(S_grid.shape[0]):
+            for j in range(S_grid.shape[1]):
+                price_tmp, _, _, _, _, _ = black_scholes(
+                    S_grid[i, j], K, T_grid[i, j], r, sigma, option_type_code
+                )
+                Z[i, j] = price_tmp
+
+        fig_surface = go.Figure(data=[go.Surface(
+            z=Z, x=S_grid, y=T_grid, colorscale="Viridis"
+        )])
+        fig_surface.update_layout(
+            scene=dict(
+                xaxis_title="Underlying Price (S)",
+                yaxis_title="Time to Maturity (T in years)",
+                zaxis_title="Option Price"
+            ),
+            title=f"{option_type} Price Surface (S vs. T)"
+        )
+        st.plotly_chart(fig_surface, use_container_width=True)
+
+    else:  # Underlying Price vs. Volatility
+        sigma_range = np.linspace(0.01, 0.6, 50)  # 1% to 60%
+        S_grid, sigma_grid = np.meshgrid(S_range, sigma_range)
+        Z = np.zeros_like(S_grid)
+
+        for i in range(S_grid.shape[0]):
+            for j in range(S_grid.shape[1]):
+                price_tmp, _, _, _, _, _ = black_scholes(
+                    S_grid[i, j], K, T, r, sigma_grid[i, j], option_type_code
+                )
+                Z[i, j] = price_tmp
+
+        fig_surface = go.Figure(data=[go.Surface(
+            z=Z, x=S_grid, y=sigma_grid, colorscale="Plasma"
+        )])
+        fig_surface.update_layout(
+            scene=dict(
+                xaxis_title="Underlying Price (S)",
+                yaxis_title="Volatility (σ)",
+                zaxis_title="Option Price"
+            ),
+            title=f"{option_type} Price Surface (S vs. σ)"
+        )
+        st.plotly_chart(fig_surface, use_container_width=True)
+
 with tab2:
     ticker_input2 = st.text_input("Enter Ticker", value="AAPL", key="ticker_bn")
     ticker2 = ticker_input2.strip().upper()

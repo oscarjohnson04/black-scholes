@@ -15,7 +15,7 @@ st.set_page_config(layout="wide")
 
 st.title("Options Pricing Models")
 
-tab1, tab2, tab3 = st.tabs(["Black-Scholes Model", "Binomial Model", "Monte Carlo Simulation Model"])
+tab1, tab2, tab3 = st.tabs(["Black-Scholes Model", "Binomial Model", "Monte Carlo Simulation Model (European Option)"])
 with tab1:
     ticker_input = st.text_input("Enter Ticker", value="AAPL", key="ticker_bs")
     ticker = ticker_input.strip().upper()
@@ -93,7 +93,8 @@ with tab1:
         "Greek": ["Delta", "Gamma", "Vega", "Theta", "Rho"],
         "Value": [delta, gamma, vega, theta, rho]
     })
-    
+
+    st.header("Results")
     st.write(f"{option_type} Option Price: {price:.2f}")
     st.subheader("Option Greeks")
     with st.expander("ℹ️ Option Greeks"):
@@ -299,7 +300,8 @@ with tab2:
             C = disc * ( q * C[1:i+1] + (1-q) * C[0:i])
 
         return C[0]
-    
+        
+    st.header("Results")
     binom_price = binomial_tree(K2, T2, S2, r2, N, u, d, option_type_code2)
     st.write(f"{option_type2} Option Price: {binom_price:.2f}")
 
@@ -375,52 +377,6 @@ with tab2:
                 C_USA = np.maximum(C_USA, S_USA - K2)
     
         return C_USA[0]
-    
-    US_price = american_tree(K2,T2,S2,r2,N,u,d,option_type_code2)
-    st.write(f"{option_type2} American Option Price: {US_price:.2f}")
-
-    opt = np.full((N+1, N+1), np.nan)  # option values
-    exercise = np.zeros_like(opt, dtype=int)  # early exercise flag
-    
-    # Stock prices at each node
-    stock = np.full((N+1, N+1), np.nan)
-    for i in range(N+1):
-        for j in range(i+1):
-            stock[i, j] = S2 * (u**(i-j)) * (d**j)
-    
-    # Option values at maturity
-    if option_type_code2 == 'C':
-        opt[N, :N+1] = np.maximum(stock[N, :N+1] - K2, 0)
-    else:
-        opt[N, :N+1] = np.maximum(K2 - stock[N, :N+1], 0)
-    
-    # Backward induction
-    dtUSA = T2/N
-    qUSA = (np.exp(r2*dtUSA) - d)/(u-d)
-    discUSA = np.exp(-r2*dtUSA)
-    
-    for i in range(N-1, -1, -1):
-        for j in range(i+1):
-            continuation = discUSA * (qUSA * opt[i+1, j] + (1-qUSA) * opt[i+1, j+1])
-            if option_type_code2 == 'C':
-                exercise_val = stock[i, j] - K2
-            else:
-                exercise_val = K2 - stock[i, j]
-            # American option: max of continuation or exercise
-            opt[i, j] = max(continuation, exercise_val)
-            if exercise_val > continuation:
-                exercise[i, j] = 1  # mark as early exercise
-
-    fig_usa = go.Figure(data=go.Heatmap(
-        z=np.flipud(exercise),
-        x=list(range(N+1)),
-        y=np.arange(exercise.shape[0], 0, -1),
-        colorscale='Reds'
-    ))
-    fig_usa.update_layout(title='American Option: Early Exercise Region (1 = exercise)',
-                          xaxis_title="Time Step",
-                          yaxis_title="Node")
-    st.plotly_chart(fig_usa, use_container_width=True)
 
 with tab3:
     ticker_input_mc = st.text_input("Enter Ticker", value="AAPL", key="ticker_mc")
@@ -486,7 +442,8 @@ with tab3:
     standev = np.std(CT_mc, ddof=1)
     SE_mc = standev / np.sqrt(M_mc)
 
-    st.write(f"Option value is {C0_mc:.2f} with SE +/- {SE_mc:.2f}")
+    st.header("Results")
+    st.write(f"{option_type_mc} option value is {C0_mc:.2f} with SE +/- {SE_mc:.2f}")
 
     expected_payoff = np.mean(CT_mc)
     expected_profit = expected_payoff - entry_price_mc

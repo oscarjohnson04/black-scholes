@@ -14,7 +14,7 @@ st.set_page_config(layout="wide")
 
 st.title("Options Pricing Models")
 
-tab1, tab2 = st.tabs(["Black-Scholes Model", "Binomial Model"])
+tab1, tab2, tab3 = st.tabs(["Black-Scholes Model", "Binomial Model", "Monte Carlo Simulation Model"])
 with tab1:
     ticker_input = st.text_input("Enter Ticker", value="AAPL", key="ticker_bs")
     ticker = ticker_input.strip().upper()
@@ -377,3 +377,61 @@ with tab2:
     
     US_price = american_tree(K2,T2,S2,r2,N,u,d,option_type_code2)
     st.write(f"{option_type2} American Option Price: {US_price:.2f}")
+
+with tab3:
+    ticker_input_mc = st.text_input("Enter Ticker", value="AAPL", key="ticker_mc")
+    ticker_mc = ticker_input_mc.strip().upper()
+    
+    df_mc = yf.download(ticker, start, end)
+    
+    #define variables
+    S_mc = float(round((df_mc['Close'].iloc[-1]), 2)) #base price
+    st.write("Latest closing price of chosen stock : ", S)
+    
+    user_val_mc = st.text_input("Enter the strike price", "0.01", key="strike_mc")
+    K_mc = float(user_val_mc)
+    r_percent_mc = st.slider("Risk-free rate (%)", 0.0, 10.0, value=1.0, step=0.01, format="%.2f%%", key="interest_mc")
+    r_mc = r_percent_mc / 100
+    T_mc = st.slider("Time to Maturity (in years)", 0.0, 10.0, value=1.0, step=0.1, format="%.1f", key="time_mc") / 365
+    M_mc = st.slider("Number of Simulations", 1, 1000, value=500, step=1, key="simulation_mc")
+    N_mc = st.slider("Number of time steps", 1, 50, value=5, step=1) 
+    vol_choice_mc = st.radio("Select Volatility Type", ("Historical", "Custom"), key ="vol_mc")
+    
+    if vol_choice_mc == "Historical":
+        returns = df_mc['Close'].pct_change().dropna()
+        windowinput_mc = st.text_input("Enter the time window", "30", key = "window_mc")
+        window_mc = int(windowinput_mc)
+        rolling_std_mc = returns.rolling(window=window_mc).std()
+        sigma_last_mc = rolling_std_mc.iloc[-1]
+        sigma_mc = sigma_last_mc * np.sqrt(252)  # last value
+        sigma_display_mc = float(round((sigma_mc*100), 4))
+        sigma_display_mc = str(sigma_display_mc) + "%"
+        st.write("Historical Volatility calculated from past ", window_mc," days: ", sigma_display_mc)
+    else:
+            # Let user enter custom volatility via slider
+        sigma_percent_mc = st.slider("Enter the volatility (%)", 0.0, 50.0, value=10.0, step=0.01, format="%.2f%%", key="volcustom_mc")
+        sigma_mc = sigma_percent_mc / 100
+
+    entry_price_mc = round(st.number_input("Entry premium (per option)", min_value=0.0, value=3.25, step=0.01, format="%.2f"), 2)
+
+    dt_mc = T_mc/N_mc
+    nudt_mc = (r_mc - 0.5*sigma_mc**2)*dt_mc
+    volsdt_mc = vol_mc*np.sqrt(dt_mc)
+    lnS_mc = np.log(S_mc)
+    
+    # Monte Carlo Method
+    Z_mc = np.random.normal(size=(N_mc, M_mc))
+    delta_lnSt_mc = nudt_mc + volsdt_mc*Z_mc
+    lnSt_mc = lnS_mc + np.cumsum(delta_lnSt_mc, axis=0)
+    lnSt_mc = np.concatenate( (np.full(shape=(1, M_mc), fill_value=lnS_mc), lnSt_mc ) )
+    
+    # Compute Expectation and SE
+    ST_mc = np.exp(lnSt_mc)
+    CT_mc = np.maximum(0, ST_mc - K_mc)
+    C0_mc = np.exp(-r_mc*T_mc)*np.sum(CT_mc[-1])/M_mc
+    
+    standev = np.sqrt( np.sum( (CT_mc[-1] - C0_mc)**2) / (M_mc-1) )
+    SE_mc = standev/np.sqrt(M_mc)
+
+    st_write(f"Option value is {CO_mc:.2f} with SE +/- {SE_mc:.2f}")
+    

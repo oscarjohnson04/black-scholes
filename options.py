@@ -19,7 +19,7 @@ with tab1:
     ticker_input = st.text_input("Enter Ticker", value="AAPL", key="ticker_bs")
     ticker = ticker_input.strip().upper()
     
-    df = yf.download(ticker, start, end)
+    df = yf.download(ticker, start, end, multi_level_index = False)
     
     #define variables
     S = float(round((df['Close'].iloc[-1]), 2)) #base price
@@ -248,7 +248,7 @@ with tab2:
     ticker_input2 = st.text_input("Enter Ticker", value="AAPL", key="ticker_bn")
     ticker2 = ticker_input2.strip().upper()
     
-    df2 = yf.download(ticker2, start, end)
+    df2 = yf.download(ticker2, start, end, multi_level_index = False)
     
     #define variables
     S2 = float(round((df2['Close'].iloc[-1]), 2)) #base price

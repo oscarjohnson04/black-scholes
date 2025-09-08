@@ -415,6 +415,9 @@ with tab3:
 
     entry_price_mc = round(st.number_input("Entry premium (per option)", min_value=0.0, value=3.25, step=0.01, format="%.2f"), 2)
 
+    option_type_mc = st.radio("Select Option Type", ("Call", "Put"), key="type_mc")
+    option_type_code_mc = "C" if option_type_mc == "Call" else "P"
+
     # Simulation parameters
     dt_mc = T_mc / N_mc
     nudt_mc = (r_mc - 0.5 * sigma_mc**2) * dt_mc
@@ -428,8 +431,12 @@ with tab3:
     lnSt_mc = np.vstack((np.full((1, M_mc), lnS_mc), lnSt_mc))  # prepend S0
     ST_mc = np.exp(lnSt_mc)
     
-    # Payoff (European Call)
-    CT_mc = np.maximum(ST_mc[-1] - K_mc, 0)
+    # Payoff (European Option)
+    if option_type_code_mc == "C":
+        CT_mc = np.maximum(ST_mc[-1] - K_mc, 0)
+    else:
+        CT_mc = np.maximum(K_mc - ST_mc[-1], 0)
+    
     C0_mc = np.exp(-r_mc * T_mc) * np.mean(CT_mc)
     
     # Standard error
@@ -437,7 +444,15 @@ with tab3:
     SE_mc = standev / np.sqrt(M_mc)
 
     st.write(f"Option value is {C0_mc:.2f} with SE +/- {SE_mc:.2f}")
-    
+
+    expected_payoff = np.mean(CT_mc)
+    expected_profit = expected_payoff - entry_price_mc
+    st.write(f"Expected Payoff: {expected_payoff:.2f}")
+    st.write(f"Expected Profit (per option): {expected_profit:.2f}")
+
+    prob_profit = np.mean(CT_mc > entry_price_mc)
+    st.write(f"Probability of Profit: {prob_profit:.2%}")
+
     num_paths_to_plot = min(20, M_mc)
 
     fig_path = go.Figure()
@@ -463,7 +478,7 @@ with tab3:
     st.plotly_chart(fig_path, use_container_width=True)
 
     fig_hist = px.histogram(
-    x=ST_mc[-1], nbins=50, opacity=0.7,
+    x=ST_mc[-1], nbins=100, opacity=0.7,
     title="Distribution of Terminal Stock Prices",
     labels={"x": "Terminal Stock Price", "y": "Frequency"}
     )

@@ -416,7 +416,7 @@ with tab3:
 
     dt_mc = T_mc/N_mc
     nudt_mc = (r_mc - 0.5*sigma_mc**2)*dt_mc
-    volsdt_mc = vol_mc*np.sqrt(dt_mc)
+    volsdt_mc = sigma_mc*np.sqrt(dt_mc)
     lnS_mc = np.log(S_mc)
     
     # Monte Carlo Method

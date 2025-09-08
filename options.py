@@ -394,7 +394,7 @@ with tab3:
     r_mc = r_percent_mc / 100
     T_mc = st.slider("Time to Maturity (in years)", 0.0, 10.0, value=1.0, step=0.1, format="%.1f", key="time_mc") / 365
     M_mc = st.slider("Number of Simulations", 1, 1000, value=500, step=1, key="simulation_mc")
-    N_mc = st.slider("Number of time steps", 1, 50, value=5, step=1) 
+    N_mc = st.slider("Number of time steps", 1, 50, value=5, step=1, key="step_mc") 
     vol_choice_mc = st.radio("Select Volatility Type", ("Historical", "Custom"), key ="vol_mc")
     
     if vol_choice_mc == "Historical":

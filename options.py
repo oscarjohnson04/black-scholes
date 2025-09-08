@@ -398,7 +398,7 @@ with tab2:
     # Backward induction
     for i in range(N-1, -1, -1):
         for j in range(i+1):
-            opt[i, j] = np.exp(-r2*dt) * (q_plot * opt[i+1, j] + (1-q) * opt[i+1, j+1])
+            opt[i, j] = np.exp(-r2*dt) * (q_plot * opt[i+1, j] + (1-q_plot) * opt[i+1, j+1])
     
     # Heatmap of option values
     fig_binomial = go.Figure(data=go.Heatmap(

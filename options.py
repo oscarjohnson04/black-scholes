@@ -364,8 +364,6 @@ with tab2:
         else:
             C_USA = np.maximum(0, S_USA - K2)
 
-        exercise = (opt == np.maximum(S_USA - K2, 0)) if option_type_code2 == 'C' else (opt == np.maximum(K2 - S_USA, 0))
-
         # backward recursion through the tree
         for i in np.arange(N-1,-1,-1):
             S_USA = S2 * d**(np.arange(i,-1,-1)) * u**(np.arange(0,i+1,1))
@@ -381,8 +379,47 @@ with tab2:
     US_price = american_tree(K2,T2,S2,r2,N,u,d,option_type_code2)
     st.write(f"{option_type2} American Option Price: {US_price:.2f}")
 
-    fig_usa = go.Figure(data=go.Heatmap(z=np.flipud(exercise.astype(int)), x=list(range(N+1)), y=np.arange(exercise.shape[0],0,-1)))
-    fig_usa.update_layout(title='Early Exercise Region (1 = exercise)')
+    opt = np.full((N+1, N+1), np.nan)  # option values
+    exercise = np.zeros_like(opt, dtype=int)  # early exercise flag
+    
+    # Stock prices at each node
+    stock = np.full((N+1, N+1), np.nan)
+    for i in range(N+1):
+        for j in range(i+1):
+            stock[i, j] = S2 * (u**(i-j)) * (d**j)
+    
+    # Option values at maturity
+    if option_type_code2 == 'C':
+        opt[N, :N+1] = np.maximum(stock[N, :N+1] - K2, 0)
+    else:
+        opt[N, :N+1] = np.maximum(K2 - stock[N, :N+1], 0)
+    
+    # Backward induction
+    dtUSA = T2/N
+    qUSA = (np.exp(r2*dtUSA) - d)/(u-d)
+    discUSA = np.exp(-r2*dtUSA)
+    
+    for i in range(N-1, -1, -1):
+        for j in range(i+1):
+            continuation = discUSA * (qUSA * opt[i+1, j] + (1-qUSA) * opt[i+1, j+1])
+            if option_type_code2 == 'C':
+                exercise_val = stock[i, j] - K2
+            else:
+                exercise_val = K2 - stock[i, j]
+            # American option: max of continuation or exercise
+            opt[i, j] = max(continuation, exercise_val)
+            if exercise_val > continuation:
+                exercise[i, j] = 1  # mark as early exercise
+
+    fig_usa = go.Figure(data=go.Heatmap(
+        z=np.flipud(exercise),
+        x=list(range(N+1)),
+        y=np.arange(exercise.shape[0], 0, -1),
+        colorscale='Reds'
+    ))
+    fig_usa.update_layout(title='American Option: Early Exercise Region (1 = exercise)',
+                          xaxis_title="Time Step",
+                          yaxis_title="Node")
     st.plotly_chart(fig_usa, use_container_width=True)
 
 with tab3:

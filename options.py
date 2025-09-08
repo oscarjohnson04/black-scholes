@@ -6,6 +6,7 @@ from scipy.stats import norm
 import streamlit as st
 import datetime as dt
 import plotly.graph_objects as go
+import plotly.express as px
 
 start = dt.datetime(2015, 1, 1)
 end = dt.datetime.now()

@@ -461,11 +461,20 @@ with tab3:
     
     st.plotly_chart(fig_path, use_container_width=True)
 
-    fig_hist, ax = plt.subplots()
-    ax.hist(ST_mc[-1], bins=50, density=True, alpha=0.6)
-    ax.axvline(K_mc, color='r', linestyle='--', label='Strike')
-    ax.set_title("Distribution of Terminal Stock Prices")
-    ax.set_xlabel("Price")
-    ax.set_ylabel("Frequency")
-    ax.legend()
-    st.pyplot(fig_hist)
+    fig_hist = px.histogram(
+    x=ST_mc[-1], nbins=50, opacity=0.7,
+    title="Distribution of Terminal Stock Prices",
+    labels={"x": "Terminal Stock Price", "y": "Frequency"}
+    )
+    
+    # Add strike line
+    fig_hist.add_vline(
+        x=K_mc, line_dash="dash", line_color="red",
+        annotation_text="Strike", annotation_position="top right"
+    )
+    
+    fig_hist.update_layout(
+        template="plotly_white"
+    )
+    
+    st.plotly_chart(fig_hist, use_container_width=True)

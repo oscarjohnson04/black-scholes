@@ -379,10 +379,10 @@ with tab2:
     st.write(f"{option_type2} American Option Price: {US_price:.2f}")
 
 with tab3:
-    ticker_input_mc = st.text_input("Enter Ticker", value="AAPL", multi_level_index = False, key="ticker_mc")
+    ticker_input_mc = st.text_input("Enter Ticker", value="AAPL", key="ticker_mc")
     ticker_mc = ticker_input_mc.strip().upper()
     
-    df_mc = yf.download(ticker_mc, start, end)
+    df_mc = yf.download(ticker_mc, start, end, multi_level_index = False)
     
     #define variables
     S_mc = float(round((df_mc['Close'].iloc[-1]), 2)) #base price

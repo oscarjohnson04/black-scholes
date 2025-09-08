@@ -437,3 +437,26 @@ with tab3:
 
     st.write(f"Option value is {C0_mc:.2f} with SE +/- {SE_mc:.2f}")
     
+    num_paths_to_plot = min(20, M_mc)
+
+    fig_path = go.Figure()
+    
+    for i in range(num_paths_to_plot):
+        fig_path.add_trace(go.Scatter(
+            x=list(range(N_mc + 1)),
+            y=ST_mc[:, i],
+            mode="lines",
+            line=dict(width=1),
+            name=f"Path {i+1}",
+            opacity=0.7
+        ))
+    
+    fig_path.update_layout(
+        title="Simulated Stock Price Paths (Monte Carlo)",
+        xaxis_title="Time Steps",
+        yaxis_title="Stock Price",
+        template="plotly_white",
+        showlegend=False
+    )
+    
+    st.plotly_chart(fig_mc, use_container_width=True)

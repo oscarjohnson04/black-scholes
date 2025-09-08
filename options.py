@@ -380,18 +380,36 @@ with tab2:
     st.write(f"{option_type2} American Option Price: {US_price:.2f}")
 
     stock = np.full((N+1, N+1), np.nan)
-    opt   = np.full_like(stock, np.nan, dtype=float)
+    opt   = np.full((N+1, N+1), np.nan)
+    
+    # Fill stock lattice
     for i in range(N+1):
         for j in range(i+1):
-            stock[i,j] = S2 * (u**(i-j)) * (d**j)
-    # compute option values by backward induction and store in opt similarly (use your binomial_tree logic but fill matrix)
-    # ... (compute opt matrix) ...
+            stock[i, j] = S2 * (u**(i-j)) * (d**j)
     
-    # Heatmap of option values (time axis horizontally)
-    fig_binomial = go.Figure(data=go.Heatmap(z=np.flipud(opt), 
-                                    x=list(range(0, N+1)), 
-                                    y=np.arange(opt.shape[0],0,-1)))
-    fig_binomial.update_layout(title="Binomial: option values heatmap (time vs node)")
+    # Fill option values at maturity
+    if option_type_code2 == "C":
+        opt[N, :N+1] = np.maximum(stock[N, :N+1] - K2, 0)
+    else:
+        opt[N, :N+1] = np.maximum(K2 - stock[N, :N+1], 0)
+    
+    # Backward induction
+    for i in range(N-1, -1, -1):
+        for j in range(i+1):
+            opt[i, j] = np.exp(-r2*dt) * (q * opt[i+1, j] + (1-q) * opt[i+1, j+1])
+    
+    # Heatmap of option values
+    fig_binomial = go.Figure(data=go.Heatmap(
+        z=np.flipud(opt),
+        x=list(range(0, N+1)),
+        y=np.arange(opt.shape[0],0,-1),
+        colorscale="Viridis"
+    ))
+    fig_binomial.update_layout(
+        title="Binomial: Option Values Heatmap (time vs node)",
+        xaxis_title="Time Step",
+        yaxis_title="Node"
+    )
     st.plotly_chart(fig_binomial, use_container_width=True)
 
 with tab3:

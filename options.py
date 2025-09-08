@@ -460,3 +460,12 @@ with tab3:
     )
     
     st.plotly_chart(fig_path, use_container_width=True)
+
+    fig_hist, ax = plt.subplots()
+    ax.hist(ST_mc[-1], bins=50, density=True, alpha=0.6)
+    ax.axvline(K_mc, color='r', linestyle='--', label='Strike')
+    ax.set_title("Distribution of Terminal Stock Prices")
+    ax.set_xlabel("Price")
+    ax.set_ylabel("Frequency")
+    ax.legend()
+    st.pyplot(fig_hist)

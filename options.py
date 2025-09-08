@@ -379,6 +379,8 @@ with tab2:
     US_price = american_tree(K2,T2,S2,r2,N,u,d,option_type_code2)
     st.write(f"{option_type2} American Option Price: {US_price:.2f}")
 
+    q_plot = (np.exp(r2*dt) - d) / (u - d)
+    
     stock = np.full((N+1, N+1), np.nan)
     opt   = np.full((N+1, N+1), np.nan)
     
@@ -396,7 +398,7 @@ with tab2:
     # Backward induction
     for i in range(N-1, -1, -1):
         for j in range(i+1):
-            opt[i, j] = np.exp(-r2*dt) * (q * opt[i+1, j] + (1-q) * opt[i+1, j+1])
+            opt[i, j] = np.exp(-r2*dt) * (q_plot * opt[i+1, j] + (1-q) * opt[i+1, j+1])
     
     # Heatmap of option values
     fig_binomial = go.Figure(data=go.Heatmap(

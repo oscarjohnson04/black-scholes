@@ -378,6 +378,9 @@ with tab2:
     
         return C_USA[0]
 
+    US_price = american_tree(K2,T2,S2,r2,N,u,d,option_type_code2) 
+    st.write(f"{option_type2} American Option Price: {US_price:.2f}")
+        
 with tab3:
     ticker_input_mc = st.text_input("Enter Ticker", value="AAPL", key="ticker_mc")
     ticker_mc = ticker_input_mc.strip().upper()

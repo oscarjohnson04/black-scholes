@@ -459,4 +459,4 @@ with tab3:
         showlegend=False
     )
     
-    st.plotly_chart(fig_mc, use_container_width=True)
+    st.plotly_chart(fig_path, use_container_width=True)

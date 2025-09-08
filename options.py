@@ -379,6 +379,21 @@ with tab2:
     US_price = american_tree(K2,T2,S2,r2,N,u,d,option_type_code2)
     st.write(f"{option_type2} American Option Price: {US_price:.2f}")
 
+    stock = np.full((N+1, N+1), np.nan)
+    opt   = np.full_like(stock, np.nan, dtype=float)
+    for i in range(N+1):
+        for j in range(i+1):
+            stock[i,j] = S2 * (u**(i-j)) * (d**j)
+    # compute option values by backward induction and store in opt similarly (use your binomial_tree logic but fill matrix)
+    # ... (compute opt matrix) ...
+    
+    # Heatmap of option values (time axis horizontally)
+    fig_binomial = go.Figure(data=go.Heatmap(z=np.flipud(opt), 
+                                    x=list(range(0, N+1)), 
+                                    y=np.arange(opt.shape[0],0,-1)))
+    fig_binomial.update_layout(title="Binomial: option values heatmap (time vs node)")
+    st.plotly_chart_binomial(fig, use_container_width=True)
+
 with tab3:
     ticker_input_mc = st.text_input("Enter Ticker", value="AAPL", key="ticker_mc")
     ticker_mc = ticker_input_mc.strip().upper()

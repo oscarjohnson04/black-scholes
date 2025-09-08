@@ -363,7 +363,9 @@ with tab2:
             C_USA = np.maximum(0, K2 - S_USA)
         else:
             C_USA = np.maximum(0, S_USA - K2)
-    
+
+        exercise = (opt == np.maximum(S_USA - K2, 0)) if option_type_code2 == 'C' else (opt == np.maximum(K2 - S_USA, 0))
+
         # backward recursion through the tree
         for i in np.arange(N-1,-1,-1):
             S_USA = S2 * d**(np.arange(i,-1,-1)) * u**(np.arange(0,i+1,1))
@@ -379,40 +381,9 @@ with tab2:
     US_price = american_tree(K2,T2,S2,r2,N,u,d,option_type_code2)
     st.write(f"{option_type2} American Option Price: {US_price:.2f}")
 
-    q_plot = (np.exp(r2*dt) - d) / (u - d)
-    
-    stock = np.full((N+1, N+1), np.nan)
-    opt   = np.full((N+1, N+1), np.nan)
-    
-    # Fill stock lattice
-    for i in range(N+1):
-        for j in range(i+1):
-            stock[i, j] = S2 * (u**(i-j)) * (d**j)
-    
-    # Fill option values at maturity
-    if option_type_code2 == "C":
-        opt[N, :N+1] = np.maximum(stock[N, :N+1] - K2, 0)
-    else:
-        opt[N, :N+1] = np.maximum(K2 - stock[N, :N+1], 0)
-    
-    # Backward induction
-    for i in range(N-1, -1, -1):
-        for j in range(i+1):
-            opt[i, j] = np.exp(-r2*dt) * (q_plot * opt[i+1, j] + (1-q_plot) * opt[i+1, j+1])
-    
-    # Heatmap of option values
-    fig_binomial = go.Figure(data=go.Heatmap(
-        z=np.flipud(opt),
-        x=list(range(0, N+1)),
-        y=np.arange(opt.shape[0],0,-1),
-        colorscale="Viridis"
-    ))
-    fig_binomial.update_layout(
-        title="Binomial: Option Values Heatmap (time vs node)",
-        xaxis_title="Time Step",
-        yaxis_title="Node"
-    )
-    st.plotly_chart(fig_binomial, use_container_width=True)
+    fig_usa = go.Figure(data=go.Heatmap(z=np.flipud(exercise.astype(int)), x=list(range(N+1)), y=np.arange(exercise.shape[0],0,-1)))
+    fig_usa.update_layout(title='Early Exercise Region (1 = exercise)')
+    st.plotly_chart(fig_usa, use_container_width=True)
 
 with tab3:
     ticker_input_mc = st.text_input("Enter Ticker", value="AAPL", key="ticker_mc")
